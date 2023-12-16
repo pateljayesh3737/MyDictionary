@@ -16,8 +16,8 @@ compose-plugin = "1.6.0-alpha01"
 decompose = "2.2.1"
 junit = "4.13.2"
 kodeinDiFrameworkCompose = "7.19.0"
-kotlin = "1.9.21"
-krossbowStompCore = "5.7.0"
+kotlin = "1.9.20"
+ktorClientCio = "2.3.7"
 
 [libraries]
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
@@ -37,8 +37,8 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = 
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
-krossbow-stomp-core = { module = "org.hildan.krossbow:krossbow-stomp-core", version.ref = "krossbowStompCore" }
-krossbow-websocket-ktor = { module = "org.hildan.krossbow:krossbow-websocket-ktor", version.ref = "krossbowStompCore" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClientCio" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorClientCio" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
