@@ -16,6 +16,7 @@ compose-plugin = "1.6.0-alpha01"
 junit = "4.13.2"
 kodeinDiFrameworkCompose = "7.19.0"
 kotlin = "1.9.21"
+krossbowStompCore = "5.7.0"
 
 [libraries]
 kodein-di-framework-compose = { module = "org.kodein.di:kodein-di-framework-compose", version.ref = "kodeinDiFrameworkCompose" }
@@ -34,6 +35,8 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = 
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+krossbow-stomp-core = { module = "org.hildan.krossbow:krossbow-stomp-core", version.ref = "krossbowStompCore" }
+krossbow-websocket-ktor = { module = "org.hildan.krossbow:krossbow-websocket-ktor", version.ref = "krossbowStompCore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

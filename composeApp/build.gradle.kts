@@ -44,6 +44,8 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(libs.kodein.di.framework.compose)
+            implementation(libs.krossbow.stomp.core)
+            implementation(libs.krossbow.websocket.ktor)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
