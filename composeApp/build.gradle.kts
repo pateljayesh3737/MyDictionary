@@ -15,9 +15,9 @@ kotlin {
             }
         }
     }
-    
+
     jvm("desktop")
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -28,10 +28,10 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -46,6 +46,7 @@ kotlin {
             implementation(libs.kodein.di.framework.compose)
             implementation(libs.krossbow.stomp.core)
             implementation(libs.krossbow.websocket.ktor)
+            implementation(libs.decompose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
