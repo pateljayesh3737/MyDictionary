@@ -1,10 +1,48 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.serialization)
+}
+
+val buildConfigGenerator by tasks.registering(Sync::class) {
+    val apiKey = getLocalProperty("API_KEY")
+
+    from(
+        resources.text.fromString(
+            """
+        |package com.jayesh
+        |
+        |object BuildConfig {
+        |  const val API_KEY = "${apiKey}"
+        |}
+        |
+      """.trimMargin()
+        )
+    ) {
+        rename { "BuildConfig.kt" }
+        into("com/jayesh")
+    }
+
+    into(layout.buildDirectory.dir("generated-src/kotlin/"))
+}
+
+fun getLocalProperty(key: String, file: String = "local.properties"): Any {
+    val properties = Properties()
+    val localProperties = File(file)
+    if (localProperties.isFile) {
+        InputStreamReader(FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
+            properties.load(reader)
+        }
+    } else error("File from not found")
+
+    return properties.getProperty(key)
 }
 
 kotlin {
@@ -32,10 +70,18 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
+        val commonMain by getting {
+            kotlin.srcDirs(
+                buildConfigGenerator.map { it.destinationDir }
+            )
+        }
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -45,8 +91,13 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.kodein.di.framework.compose)
             implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
             implementation(libs.decompose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.test)
+            implementation(libs.koin.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
