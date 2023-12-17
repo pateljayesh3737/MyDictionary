@@ -1,5 +1,6 @@
 package di
 
+import GetWordInfoUseCase
 import datasource.ApiDataSource
 import datasource.ApiDataSourceImpl
 import io.ktor.client.HttpClient
@@ -14,6 +15,12 @@ val httpClientModule = module {
     }
 }
 
+val useCaseModule = module {
+    factory {
+        GetWordInfoUseCase(dictionaryRepository = get())
+    }
+}
+
 val networkModule = module {
     single<ApiDataSource> {
         ApiDataSourceImpl(httpClient = get<HttpClient>())
@@ -24,4 +31,4 @@ val networkModule = module {
     }
 }
 
-val modules = listOf(httpClientModule, networkModule)
+val modules = listOf(httpClientModule, networkModule, useCaseModule)

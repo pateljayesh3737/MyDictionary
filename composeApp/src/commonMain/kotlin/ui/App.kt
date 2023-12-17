@@ -1,64 +1,73 @@
 package ui
 
-import Greeting
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
+import GetWordInfoUseCase
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.rememberKoinInject
-import repository.DictionaryRepository
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
     MaterialTheme {
-        val dictionaryRepository = rememberKoinInject<DictionaryRepository>()
+        val getWordInfoUseCase = rememberKoinInject<GetWordInfoUseCase>()
         val coroutineScope = rememberCoroutineScope()
-        var greetingText by remember { mutableStateOf("Hello World!") }
-        var showImage by remember { mutableStateOf(false) }
+        val word = remember { mutableStateOf("") }
+        val wordInfoResult = remember { mutableStateOf("") }
+
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+
+            OutlinedTextField(
+                value = word.value,
+                onValueChange = { word.value = it },
+                label = { Text("Enter word") }
+            )
+
             Button(onClick = {
-                greetingText = "Compose: ${Greeting().greet()}"
-                showImage = !showImage
                 getWordInfo(
-                    dictionaryRepository = dictionaryRepository,
-                    coroutineScope = coroutineScope
+                    word = word.value,
+                    getWordInfoUseCase = getWordInfoUseCase,
+                    coroutineScope = coroutineScope,
+                    wordInfoResult = wordInfoResult
                 )
             }) {
-                Text(greetingText)
+                Text("Submit")
             }
-            AnimatedVisibility(showImage) {
-                Image(
-                    painterResource("compose-multiplatform.xml"),
-                    null
-                )
+
+            LazyColumn {
+                item {
+                    Text(wordInfoResult.value, modifier = Modifier.fillMaxWidth().padding(8.dp))
+                }
             }
         }
     }
 }
 
 private fun getWordInfo(
+    word: String,
     coroutineScope: CoroutineScope,
-    dictionaryRepository: DictionaryRepository
+    getWordInfoUseCase: GetWordInfoUseCase,
+    wordInfoResult: MutableState<String>
 ) {
     coroutineScope.launch {
-        val wordInfo = dictionaryRepository.getWordInfo("how")
-        if (wordInfo != null) println(wordInfo)
-        else println("wordInfo is null")
+        val wordInfo = getWordInfoUseCase.invoke(word = word)
+        if (wordInfo != null) {
+            println(wordInfo)
+            wordInfoResult.value = wordInfo.toString()
+        } else println("wordInfo is null")
     }
 }
